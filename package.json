@@ -1,0 +1,22 @@
+{
+	"devDependencies": {
+		"@commitlint/cli": "^17.6.3",
+		"commitizen": "^4.3.0",
+		"cz-git": "^1.6.1",
+		"husky": "^8.0.3",
+		"markdown-it-katex": "^2.0.3",
+		"vitepress": "^1.0.0-alpha.75"
+	},
+	"scripts": {
+		"docs:dev": "vitepress dev --open",
+		"docs:build": "vitepress build",
+		"docs:preview": "vitepress preview",
+		"prepare": "husky install",
+		"push": "git add . && git commit -m 'push' && git push origin master",
+		"deploy": "bash deploy.sh"
+	},
+	"dependencies": {
+		"@types/node": "^18.16.3",
+		"katex": "^0.16.7"
+	}
+}

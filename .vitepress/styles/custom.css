@@ -1,0 +1,9 @@
+@import url("../../node_modules/katex/dist/katex.min.css");
+
+.katex .vlist {
+    top: -0.9em;
+}
+.katex .base .mbin {
+    margin-left: 0.12em;
+    display: inline-block;
+}
