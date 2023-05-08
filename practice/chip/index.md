@@ -10,14 +10,17 @@
 
 1.  **芯片 API 描述**
 
-    ```md
-    芯片名称：Not
-    输入：in
-    输出：out
-    功能：if in=0 then out=1 else out=0.
-    ```
+![not gate](./../../assets/imgs/not-gate.drawio.svg)
 
-2.  **根据 API 描述信息编写 Not.hdl**
+```md
+芯片名称：Not
+输入：in
+输出：out
+功能：if in=0 then out=1 else out=0.
+描述：输入 0 则输出 1;输入 1 则输出 0。
+```
+
+1.  **根据 API 描述信息编写 Not.hdl**
 
     ```txt
     CHIP Not {
@@ -29,7 +32,7 @@
     }
     ```
 
-3.  **编写 Not.cmp 预测 Not.hdl 的运行结果**
+2.  **编写 Not.cmp 预测 Not.hdl 的运行结果**
 
     ```txt
     | a |out|
@@ -37,7 +40,7 @@
     | 1 | 0 |
     ```
 
-4.  **编写 Not.tst 测试文件，对比 Not.hdl 实际运行结果与 Not.cmp 预期结果**
+3.  **编写 Not.tst 测试文件，对比 Not.hdl 实际运行结果与 Not.cmp 预期结果**
 
     ```txt
     /**
@@ -76,26 +79,12 @@ NAND 门是一个数字电路逻辑门，它是由两个输入引脚和一个输
 ::: code-group
 
 ```md [API 文档]
-# And gate truth table
-
-|   a   |   b   |  out  |
-| :---: | :---: | :---: |
-|   0   |   0   |   0   |
-|   0   |   1   |   0   |
-|   1   |   0   |   0   |
-|   1   |   1   |   1   |
-
-# And gate expression
-
-And(a, b) = Nand(Nand(a,b), Nand(a,b))
-
-# And gate text description
-
 - 芯片名：and
 - 输入：a, b
 - 输出：out
 - 功能： if a=b=1 then out=1 else out=0
-
+- 表达式：And(a, b) = Nand(Nand(a,b), Nand(a,b))
+- 描述：只有当输入值都是 1 的时候，And 函数的输出值才为 1，否则输出为 0。
 ```
 
 ```txt [芯片描述文件 .hdl]
@@ -134,6 +123,65 @@ set a 1, set b 1, eval, output;
 | 0 | 0 | 0 |
 | 0 | 1 | 0 |
 | 1 | 0 | 0 |
+| 1 | 1 | 1 |
+```
+
+:::
+
+## 2. 实现一个 Or 门逻辑的芯片？
+
+![or gate](./../../assets/imgs/or-gate.drawio.svg)
+
+::: code-group
+
+```md [API 文档]
+- 芯片名：or
+- 输入：a, b
+- 输出：out
+- 功能：if (a == 1 or b == 1) then out = 1 else out = 0
+- 描述：只有当输入值都是 0 的时候，or 函数的输出值才为 0，否则输出为 1。
+- 思路：Or = Nand(Not(a), Not(b))
+```
+
+```txt [芯片描述文件 .hdl]
+/**
+* Or gate
+* 思路： or = Nand(Not(a), Not(b))
+*/
+
+CHIP Or {
+	IN a, b;
+	OUT out;
+
+	PARTS:
+	Not(in = a, out = o1);
+	Not(in = b, out = o2);
+	Nand(a = o1, b = o2, out = out);
+}
+```
+
+```txt [芯片测试文件 .tst]
+/**
+* Or.tst: testing Or.hdl
+*/
+
+load Or.hdl,
+output-file Or.out,
+compare-to Or.cmp,
+output-list a%B1.1.1 b%B1.1.1 out%B1.1.1;
+
+set a 0, set b 0, eval, output;
+set a 0, set b 1, eval, output;
+set a 1, set b 0, eval, output;
+set a 1, set b 1, eval, output;
+
+```
+
+```txt [芯片测试数据 .cmp]
+| a | b |out|
+| 0 | 0 | 0 |
+| 0 | 1 | 1 |
+| 1 | 0 | 1 |
 | 1 | 1 | 1 |
 ```
 
