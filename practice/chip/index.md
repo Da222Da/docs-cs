@@ -1,6 +1,6 @@
 # 芯片设计
 
-## 前言：仿真器、以及芯片开发流程
+## 前言：仿真器、以及 Not 芯片开发流程
 
 在芯片设计过程中，仿真是一个非常重要的环节，通过仿真，可以提前检测和排除设计中可能存在的错误和缺陷，避免在实际制造和应用中出现问题。此外，仿真还可以帮助设计者评估和优化电路的性能，提高电路的效率、可靠性和可维护性。从而，大大缩短设计周期和降低设计成本。
 
@@ -183,6 +183,70 @@ set a 1, set b 1, eval, output;
 | 0 | 1 | 1 |
 | 1 | 0 | 1 |
 | 1 | 1 | 1 |
+```
+
+:::
+
+## 3. 实现一个 Xor 门逻辑的芯片？
+
+![xor gate](./../../assets/imgs/xor-gate.drawio.svg)
+
+::: code-group
+
+```md [API 文档]
+- 芯片名：Xor
+- 输入：a, b
+- 输出：out
+- 功能：out = not (a == b)
+- 描述：Xor，异或，当两个输入值相反的时候输出为 1，否则返回 0。
+- 思路：Xor = Or(And(a, Not(b)), And(Not(a), b))
+```
+
+```txt [芯片描述文件 .hdl]
+/**
+* @name: Xor.hdl
+* @expression: out = not (a == b)
+* @parts: Xor = Or(And(a, Not(b)), And(Not(a), b))
+*/
+
+CHIP Xor {
+	IN a, b;
+	OUT out;
+
+	PARTS:
+	Not(in = b, out = n0);
+	And(a = a, b = n0, out = a0);
+	Not(in = a, out = n1);
+	And(a = n1, b = b, out = a1);
+	Or(a = a0, b = a1, out = out);
+}
+
+```
+
+```txt [芯片测试文件 .tst]
+/**
+* Xor.tst: testing Xor.hdl
+*/
+
+load Xor.hdl,
+output-file Xor.out,
+compare-to Xor.cmp,
+output-list a%B1.1.1 b%B1.1.1 out%B1.1.1;
+
+set a 0,set b 0, eval, output;
+set a 0,set b 1, eval, output;
+set a 1,set b 0, eval, output;
+set a 1,set b 1, eval, output;
+
+
+```
+
+```txt [芯片测试数据 .cmp]
+| a | b |out|
+| 0 | 0 | 0 |
+| 0 | 1 | 1 |
+| 1 | 0 | 1 |
+| 1 | 1 | 0 |
 ```
 
 :::
