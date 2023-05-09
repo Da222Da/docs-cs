@@ -1,0 +1,1 @@
+import{_ as e,c as t,o as a,O as r}from"./chunks/framework.c601997b.js";const u=JSON.parse('{"title":"计算机系统 Computer System","description":"","frontmatter":{},"headers":[],"relativePath":"index.md","filePath":"index.md"}'),o={name:"index.md"},d=r("",8),n=[d];function s(i,l,c,h,_,m){return a(),t("div",null,n)}const f=e(o,[["render",s]]);export{u as __pageData,f as default};
